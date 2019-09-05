@@ -177,3 +177,21 @@ func (tw *TimeWheel) removeTask(key interface{}) {
 		e = e.Next()
 	}
 }
+
+
+// 从链表中删除所有任务
+func (tw *TimeWheel) RemoveAllTask() (keys []interface{}) {
+	// 获取定时器所在的槽
+	for _,position := range tw.timer{
+		// 获取槽指向的链表
+		l := tw.slots[position]
+		for e := l.Front(); e != nil; {
+			task := e.Value.(*Task)
+			keys = append(keys,task.key)
+			delete(tw.timer, task.key)
+			l.Remove(e)
+			e = e.Next()
+		}
+	}
+	return
+}
